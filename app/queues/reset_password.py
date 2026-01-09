@@ -10,8 +10,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-logger.info("Reset password handler loaded")
-
 
 @broker.subscriber(config.queues.reset_password)
 async def handle_reset_password(msg: ResetPasswordMessage):

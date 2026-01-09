@@ -2,9 +2,8 @@ import asyncio
 
 from faststream import FastStream
 
-import app.queues.reset_password as reset_password
+import app.queues.reset_password as reset_password # noqa
 from app.core.broker import broker
-from app.core.config import config
 from app.core.log import setup_logging
 
 app = FastStream(broker)
