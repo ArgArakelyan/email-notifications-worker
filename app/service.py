@@ -6,6 +6,7 @@ import aiosmtplib
 
 from app.core.config import config
 from app.templates.reset_password import reset_template
+from app.templates.verification_code import verificaton_template
 
 logger = logging.getLogger(__name__)
 
@@ -21,13 +22,10 @@ class EmailNotificationService:
 
         # templates
         self.reset_template = reset_template
+        self.account_verification_template = verificaton_template
 
-    async def send_reset_password(self, to_email: str, reset_code: str):
+    async def send_from_template(self, to_email, html_body, subject):
         try:
-            subject = f"Сброс пароля • Код: {reset_code}"
-
-            html_body = self.reset_template.render(reset_code=reset_code)
-
             msg = MIMEMultipart("alternative")
             msg["Subject"] = subject
             msg["From"] = f"{self.from_name} <{self.from_email}>"
@@ -50,6 +48,17 @@ class EmailNotificationService:
         except Exception as e:
             logger.error("Failed to send email notification", extra={"error": str(e), "smtp_port": self.smtp_port, "to_email": to_email})
             return False
+
+    async def send_reset_password(self, to_email: str, reset_code: str):
+        html_body = self.reset_template.render(reset_code)
+        subject = f"Ваш код для сброса пароля"
+        return await self.send_from_template(to_email=to_email, html_body=html_body, subject=subject)
+
+    async def send_account_verification_code(self, to_email: str, code: str):
+        html_body = self.account_verification_template.render(code=code)
+        subject = "Ваш код для подтверждения аккаунта"
+        return await self.send_from_template(to_email=to_email, html_body=html_body, subject=subject)
+
 
 
 def get_email_notification_service() -> EmailNotificationService:

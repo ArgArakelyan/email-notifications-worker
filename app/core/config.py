@@ -31,6 +31,7 @@ class RabbitConfig(BaseSettings):
 
 class QueuesConfig(BaseSettings):
     reset_password: str = "email.reset_password"
+    account_verification: str = "email.account_verification"
 
     model_config = {"env_prefix": "QUEUE_", "extra": "ignore"}
 
